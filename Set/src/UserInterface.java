@@ -6,13 +6,14 @@ public class UserInterface {
 	private static final int numLetters = 26;
 	private int size = 0;
 	private ArrayList<Set<String>> sets;
+	Set<String> universe;
 
 	public void CreateUserInterface() {
 		Scanner scanner = new Scanner(System.in);
 		String[] input;
 		System.out.println("Enter input in format: {String1,String2,String3,...}.");
 
-		Set<String> universe = new Set<>();
+		universe = new Set<>();
 		System.out.print("Universe = ");
 		input = scanner.nextLine().replaceAll("\\{|\\}", "").split(",");
 		for (String element : input)
@@ -65,25 +66,20 @@ public class UserInterface {
 					System.out.println("Error");
 				break;
 			case 3:
+				Set<String> set1, set2;
 				if (isOperator(input[1])) {
-					Set<String> set1, set2;
 					char operator = input[1].charAt(0);
-					if (validSet(input[0]) && validSet(input[2])) {
-						set1 = sets.get(charToIndex(input[0].charAt(0)));
-						set2 = sets.get(charToIndex(input[2].charAt(0)));
+					if (validSets(input[0], input[2])) {
+						set1 = getSet(input[0]);
+						set2 = getSet(input[2]);
 						operate(expression, set1, set2, operator);
-					} else if (validSet(input[0]) && isUniv(input[2])) {
-						set1 = sets.get(charToIndex(input[0].charAt(0)));
-						set2 = universe;
-						operate(expression, set1, set2, operator);
-					} else if (isUniv(input[0]) && validSet(input[2])) {
-						set1 = universe;
-						set2 = sets.get(charToIndex(input[2].charAt(0)));
-						operate(expression, set1, set2, operator);
-					} else if (isUniv(input[0]) && isUniv(input[2])) {
-						set1 = universe;
-						set2 = universe;
-						operate(expression, set1, set2, operator);
+					} else
+						System.out.println("Error");
+				} else if (input[1].charAt(0) == 'C') {
+					if (validSets(input[0], input[2])) {
+						set1 = getSet(input[0]);
+						set2 = getSet(input[2]);
+						System.out.println(set1.isSubset(set2));
 					} else
 						System.out.println("Error");
 				} else
@@ -93,6 +89,29 @@ public class UserInterface {
 				System.out.println("Error");
 			}
 		}
+	}
+
+	private boolean validSets(String set1, String set2) {
+		if (!validSet(set1) && !isUniv(set1))
+			return false;
+
+		if (!validSet(set2) && !isUniv(set2))
+			return false;
+
+		return true;
+	}
+
+	private boolean validSet(String input) {
+		if (input.length() != 1)
+			return false;
+		char c = input.charAt(0);
+		return Character.isLetter(c) && charToIndex(c) < sets.size();
+	}
+
+	private Set<String> getSet(String input) {
+		if (isUniv(input))
+			return universe;
+		return sets.get(charToIndex(input.charAt(0)));
 	}
 
 	private void operate(String expression, Set<String> set1, Set<String> set2, char operator) {
@@ -129,13 +148,6 @@ public class UserInterface {
 	private boolean isOperator(String input) {
 		char c = input.charAt(0);
 		return c == 'U' || c == 'N' || c == '-';
-	}
-
-	private boolean validSet(String input) {
-		if (input.length() != 1)
-			return false;
-		char c = input.charAt(0);
-		return Character.isLetter(c) && charToIndex(c) < sets.size();
 	}
 
 	private int charToIndex(char c) {
