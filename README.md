@@ -8,6 +8,8 @@
  - Example: A - B
 - **Complement** of a set (!)
  - Example: ! A
+ - **Subset** of two sets (C)
+ - Example: A C B
 
 All names of the sets are the 26 alphabet uppercase letters except the universe set which has the name "UNIV".  
 Entering the name of the set prints it.  
@@ -37,6 +39,16 @@ Enter expression: A N B
 H = A N B = {abc}
 Enter expression: ! H
 I = ! H = {bb, z, dd, ef, a0}
+Enter expression: H C UNIV
+true
+Enter expression: A C B
+false
+Enter expression: A C F
+true
+Enter expression: F C A
+false
+Enter expression: UNIV C A
+false
 Enter expression: EXIT
 
 ```
